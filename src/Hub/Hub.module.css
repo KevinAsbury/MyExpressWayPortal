@@ -1,0 +1,16 @@
+.Hub button {
+    background-color: lightgray;
+    color: black;
+    font: inherit;
+    border: 1px solid black;
+    padding: 8px;
+    cursor: pointer;
+    margin: 8px;
+    box-shadow: 0 2px 3px rgb(109, 109, 109);
+}
+
+.Hub button:hover {
+    background-color: rgb(224, 224, 224);
+    box-shadow: 0 2px 3px rgb(0, 0, 0);
+    color: black;
+  }
