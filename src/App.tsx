@@ -33,13 +33,21 @@ class App extends Component {
     })
   }
 
+  publicRoleClicked = () => {
+    this.setState({
+      role: roles.PUBLIC
+    })
+  }
+
   render() {
     return (
       <div className="App">
         <Hub 
           role={this.state.role} 
           driverClicked={this.driverRoleClicked} 
-          managerClicked={this.managerRoleClicked}></Hub>
+          managerClicked={this.managerRoleClicked}
+          publicClicked={this.publicRoleClicked}>
+          </Hub>
         <Deliveries 
           deliveries={this.state.deliveries}
           role={this.state.role}/>

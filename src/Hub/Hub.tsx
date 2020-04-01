@@ -5,7 +5,8 @@ import roles from '../enum-roles'
 type Props = {
     role: roles,
     driverClicked: any,
-    managerClicked: any
+    managerClicked: any,
+    publicClicked: any
 }
 
 class Hub extends Component<Props> {
@@ -18,12 +19,9 @@ class Hub extends Component<Props> {
             <div className={styles.Hub}>
                 <h1>My Express Way</h1>
                 <h3>Delivery Management Portal</h3>
-                {this.props.role === roles.PUBLIC ? 
-                    <p><b>Debug - Select a role:</b></p>: null}
-                {this.props.role === roles.PUBLIC || roles.MANAGER ? 
-                    <button onClick={this.props.driverClicked}>Driver Role</button> : null}
-                {this.props.role === roles.PUBLIC || roles.DRIVER ? 
-                    <button onClick={this.props.managerClicked}>Manager Role</button> : null}
+                <button onClick={this.props.publicClicked}>Public Role</button>
+                <button onClick={this.props.driverClicked}>Driver Role</button>
+                <button onClick={this.props.managerClicked}>Manager Role</button>
             </div>
         )
     }
