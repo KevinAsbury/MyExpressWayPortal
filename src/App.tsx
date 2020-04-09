@@ -3,48 +3,65 @@ import './App.css';
 import Hub from './Hub/Hub'
 import Deliveries from './Deliveries/Deliveries'
 import roles from './enum-roles'
+import axios from './axios'
 
-class App extends Component {
-  constructor(props: any[]) {
+interface IProps { 
+}
+
+type delivery = {
+  description: string, 
+  driver_id: string, 
+  delivered: boolean,
+  id: number
+}
+
+interface IState {
+  deliveries: delivery[],
+  role: roles
+}
+
+class App extends Component<IProps, IState> {
+  constructor(props: IProps) {
     super(props)
-    console.log (`[App Constructor]: ${props}`)
+    this.state = {deliveries: [], role: roles.PUBLIC}
   }
 
-  state = {
-    deliveries: [
-      { description: 'The softest white bread', driver: 'Brad Jones', delivered: false },
-      { description: 'Hex bolt wrench', driver: 'Marty Wolf', delivered: false },
-      { description: 'Better Homes and Gardens New Cookbook', driver: 'Clarence Jones', delivered: false },
-      { description: 'Star Wars Episode VI', driver: 'Marty Wold', delivered: true},
-      { description: 'Dungeon Masters Guide', driver: 'Mary Stewart', delivered: false }
-    ],
-    role: roles.PUBLIC
+  componentDidMount() {
+    axios.get('/deliveries')
+      .then(response => {
+        console.log(response.data)
+        this.setState({deliveries: response.data})
+      })
   }
 
   driverRoleClicked = () => {
     this.setState({
       role: roles.DRIVER
     })
+    // TODO: set the authorization token
+    // axios.defaults.headers.common['Authorization'] = ''
   }
 
   managerRoleClicked = () => {
     this.setState({
       role: roles.MANAGER
     })
+    // TODO: set the authorization token
+    // axios.defaults.headers.common['Authorization'] = ''
   }
 
   publicRoleClicked = () => {
     this.setState({
       role: roles.PUBLIC
     })
+    // TODO: set the authorization token
+    // axios.defaults.headers.common['Authorization'] = ''
   }
 
-  newDelivery = (description: string, driver: string) => {
-    let newDeliveries = [...this.state.deliveries]
-    newDeliveries.push({ description: description, driver: driver, delivered: false })
-    this.setState({
-      deliveries: newDeliveries
-    })
+  newDelivery = (description: string, driver: string, id: number) => {
+      let newDeliveries = [...this.state.deliveries]
+      newDeliveries.push({ description: description, driver_id: driver, delivered: false, id: id })
+      this.setState({ deliveries: newDeliveries })
   }
 
   render() {

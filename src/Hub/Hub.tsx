@@ -7,7 +7,7 @@ type Props = {
     driverClicked: () => void,
     managerClicked: () => void,
     publicClicked: () => void,
-    newDelivery: (description: string, driver: string) => void
+    newDelivery: (description: string, driver: string, id: number) => void
 }
 
 class Hub extends Component<Props> {
@@ -75,9 +75,10 @@ class Hub extends Component<Props> {
     }
 
     private submitButtonClick = () => {
+        // TODO: post to server and get new ID back
         if (this.state.description !== '' && this.state.driver !== '') {
             try {
-                this.props.newDelivery(this.state.description, this.state.driver)
+                this.props.newDelivery(this.state.description, this.state.driver, Math.random() * 100000000)
             } finally {
                 this.setState({
                     description: '',
