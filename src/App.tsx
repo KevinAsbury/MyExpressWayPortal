@@ -39,6 +39,14 @@ class App extends Component {
     })
   }
 
+  newDelivery = (description: string, driver: string) => {
+    let newDeliveries = [...this.state.deliveries]
+    newDeliveries.push({ description: description, driver: driver, delivered: false })
+    this.setState({
+      deliveries: newDeliveries
+    })
+  }
+
   render() {
     return (
       <div className="App">
@@ -46,8 +54,9 @@ class App extends Component {
           role={this.state.role} 
           driverClicked={this.driverRoleClicked} 
           managerClicked={this.managerRoleClicked}
-          publicClicked={this.publicRoleClicked}>
-          </Hub>
+          publicClicked={this.publicRoleClicked}
+          newDelivery={this.newDelivery} >
+        </Hub>
         <Deliveries 
           deliveries={this.state.deliveries}
           role={this.state.role}/>

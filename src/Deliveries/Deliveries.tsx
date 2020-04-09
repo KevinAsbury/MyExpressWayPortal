@@ -16,7 +16,6 @@ type Props = {
 class Deliveries extends Component<Props> {
     constructor(props: Props) {
         super(props)
-        console.log(`[Persons constructor]: ${props}`)
     }
 
     render () {

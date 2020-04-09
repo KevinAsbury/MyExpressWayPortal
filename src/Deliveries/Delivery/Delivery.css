@@ -12,6 +12,10 @@
     background-color: salmon;
 }
 
+.hide {
+    display: none;
+}
+
 .Delivery:hover {
     box-shadow: 0 2px 3px rgb(88, 88, 88);
   }
@@ -22,7 +26,7 @@
     height: 20px;
     border-radius: 5px;
     text-align: center;
-    position: relative;
+    position: absolute;
   }
 
   .orange-box:hover {

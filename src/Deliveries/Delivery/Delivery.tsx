@@ -12,44 +12,89 @@ type Props = {
 class Delivery extends Component<Props> {
     constructor(props: Props) {
         super(props)
-        console.log(`[Delivery constructor]: ${props}`)
+    }
+
+    state = {
+        hidden: false,
+        delivered: this.props.delivered
     }
 
     private deliveryStatus() {
-        if (this.props.delivered) {
+        if (this.state.delivered) {
             return "Delivered"
+        } else {
+            return "Out for delivery"
         }
-            
-        return "Out for delivery"
+    }
+
+    private showDelivery() {
+        if (this.props.role === roles.MANAGER || this.props.role === roles.DRIVER) {
+            return <input type="checkbox" checked={this.state.delivered} onClick={this.checkboxClick}/>
+        } else {
+            return null
+        }
     }
 
     private showDriver() {
         if (this.props.role === roles.MANAGER) {
-            return <p>Driver: {this.props.driver}</p>
+            return <input value={this.props.driver}></input> 
         }
 
         return null
     }
 
-    private deliveryStyle() {
-        if (!this.props.delivered) {
-            return 'Delivery'
+    private showDescription() {
+        if (this.props.role === roles.MANAGER) {
+            return <input value={this.props.description} style={{ width: "250px" }} />
         }
-        
-        return 'Delivery delivered'
+        return <p><b>{this.props.description}</b></p>
     }
 
-    private deliveryClickhandler() {
+    private deliveryStyle() {
+        if (this.state.hidden) {
+            return 'hide'
+        }
 
+        let result = ''
+        
+        if (this.state.delivered) {
+            result = 'Delivery delivered'
+        } else {
+            result = 'Delivery'
+        }
+
+        return result
+    }
+
+    private deleteClicked = () => {
+        this.setState({
+            hidden: true
+        })
+    }
+
+    private insertBreak() {
+        if (this.props.role === roles.MANAGER) {
+            return <br />
+        }
+    }
+
+    private checkboxClick = () => {
+        let delivered = this.state.delivered
+        this.setState({
+            delivered: !delivered
+        })
     }
 
     render() {
         return (
             <div className={this.deliveryStyle()}>
-                <div className="orange-box">X</div>
-                <p><b>{this.props.description}</b></p>
+                { this.props.role === roles.MANAGER ? <div onClick={this.deleteClicked} className="orange-box">X</div> : null }
+                { this.insertBreak() }
+                { this.showDescription() }
+                { this.insertBreak() }
                 { this.showDriver() }
-                <p>{this.deliveryStatus()}</p>
+                { this.insertBreak() }
+                <label>{this.showDelivery()}{this.deliveryStatus()}</label>
             </div>
         )
     }
