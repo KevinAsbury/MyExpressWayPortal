@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
 import Delivery from './Delivery/Delivery'
 import roles from '../enum-roles'
+import axios from '../axios_service'
 
 type delivery = {
     description: string, 
-    driver_id: string, 
+    driver_id: number, 
     delivered: boolean, 
     id: number
 }
@@ -15,8 +16,14 @@ interface IProps {
 }
 
 class Deliveries extends Component<IProps> {
-    constructor(props: IProps) {
-        super(props)
+    state = {
+        drivers: null
+    }
+    componentDidMount() {
+        axios.get('/drivers')
+            .then(response => {
+                this.setState({drivers: response.data})
+            })
     }
 
     render () {
@@ -24,10 +31,12 @@ class Deliveries extends Component<IProps> {
             return (
                 <Delivery 
                     key={deliv.id}
+                    id={deliv.id}
                     description={deliv.description}
                     driver={deliv.driver_id}
                     delivered={deliv.delivered}
                     role={this.props.role}
+                    drivers={this.state.drivers}
                 />
             )
         })) 

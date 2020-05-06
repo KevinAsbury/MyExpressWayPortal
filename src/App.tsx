@@ -1,16 +1,16 @@
-import React, { Component } from 'react';
-import './App.css';
+import React, { Component } from 'react'
+import './App.css'
 import Hub from './Hub/Hub'
 import Deliveries from './Deliveries/Deliveries'
 import roles from './enum-roles'
-import axios from './axios'
+import axios from './axios_service'
 
 interface IProps { 
 }
 
 type delivery = {
   description: string, 
-  driver_id: string, 
+  driver_id: number, 
   delivered: boolean,
   id: number
 }
@@ -29,7 +29,6 @@ class App extends Component<IProps, IState> {
   componentDidMount() {
     axios.get('/deliveries')
       .then(response => {
-        console.log(response.data)
         this.setState({deliveries: response.data})
       })
   }
@@ -58,7 +57,7 @@ class App extends Component<IProps, IState> {
     // axios.defaults.headers.common['Authorization'] = ''
   }
 
-  newDelivery = (description: string, driver: string, id: number) => {
+  newDelivery = (description: string, driver: number, id: number) => {
       let newDeliveries = [...this.state.deliveries]
       newDeliveries.push({ description: description, driver_id: driver, delivered: false, id: id })
       this.setState({ deliveries: newDeliveries })

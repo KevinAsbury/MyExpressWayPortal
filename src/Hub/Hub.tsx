@@ -1,23 +1,20 @@
 import React, { Component } from 'react'
 import styles from './Hub.module.css'
 import roles from '../enum-roles'
+import axios from '../axios_service'
 
 type Props = {
     role: roles,
     driverClicked: () => void,
     managerClicked: () => void,
     publicClicked: () => void,
-    newDelivery: (description: string, driver: string, id: number) => void
+    newDelivery: (description: string, driver: number, id: number) => void
 }
 
 class Hub extends Component<Props> {
-    constructor(props: Props) {
-        super(props)
-    }
-
     state = {
         description: '',
-        driver: ''
+        driver: 0
     }
 
     private showDeliveryInputLabel() {
@@ -76,9 +73,16 @@ class Hub extends Component<Props> {
 
     private submitButtonClick = () => {
         // TODO: post to server and get new ID back
-        if (this.state.description !== '' && this.state.driver !== '') {
+        if (this.state.description !== '' && this.state.driver !== 0) {
             try {
-                this.props.newDelivery(this.state.description, this.state.driver, Math.random() * 100000000)
+                const newDelivery = {
+                    description: this.state.description
+                }
+                axios.post('/deliveries', newDelivery)
+                    .then(response => {
+                        // console.log(response.data)
+                        this.props.newDelivery(this.state.description, this.state.driver, response.data.id)
+                    })
             } finally {
                 this.setState({
                     description: '',
@@ -96,6 +100,7 @@ class Hub extends Component<Props> {
                 <button onClick={this.props.publicClicked}>Public Role</button>
                 <button onClick={this.props.driverClicked}>Driver Role</button>
                 <button onClick={this.props.managerClicked}>Manager Role</button>
+                <button>Driver List</button>
                 { this.props.role === roles.MANAGER ? <hr style={{ width: "250px" }} /> : null }
                 { this.props.role === roles.MANAGER ? <p><b>Create New Delivery:</b></p> : null }
                 { this.insertBreak() }
