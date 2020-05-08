@@ -8,7 +8,14 @@ type Props = {
     driverClicked: () => void,
     managerClicked: () => void,
     publicClicked: () => void,
-    newDelivery: (description: string, driver: number, id: number) => void
+    driverListClicked: () => void,
+    newDelivery: (description: string, driver: number, id: number) => void,
+    driverToken: string,
+    managerToken: string,
+    selectedToken: string,
+    driverTokenChanged: (token: string) => void,
+    managerTokenChanged: (token: string) => void,
+    showDriverList: boolean
 }
 
 class Hub extends Component<Props> {
@@ -18,13 +25,13 @@ class Hub extends Component<Props> {
     }
 
     private showDeliveryInputLabel() {
-        if (this.props.role === roles.MANAGER) {
-        return <label>Description: {this.showDeliveryInput()}</label>
+        if (this.props.role === roles.MANAGER && !this.props.showDriverList) {
+            return <label>Description: {this.showDeliveryInput()}</label>
         }
     }
 
     private showDeliveryInput() {
-        if (this.props.role === roles.MANAGER) {
+        if (this.props.role === roles.MANAGER && !this.props.showDriverList) {
             return <input 
                 onChange={(event) => this.onChangeDescription(event.target.value)} 
                 type="text" style={{ width: "250px" }} 
@@ -34,13 +41,13 @@ class Hub extends Component<Props> {
     }
 
     private showDriverInputLabel() {
-        if (this.props.role === roles.MANAGER) {
+        if (this.props.role === roles.MANAGER && !this.props.showDriverList) {
             return <label>Driver: {this.showDriverInput()}</label>
         }
     }
 
     private showDriverInput() {
-        if (this.props.role === roles.MANAGER) {
+        if (this.props.role === roles.MANAGER && !this.props.showDriverList) {
             return <input 
                 onChange={(event) => this.onChangeDriver(event.target.value)} 
                 type="text" value={this.state.driver}/>
@@ -48,13 +55,13 @@ class Hub extends Component<Props> {
     }
 
     private showSubmitButton() {
-        if (this.props.role === roles.MANAGER) {
+        if (this.props.role === roles.MANAGER && !this.props.showDriverList) {
             return <button onClick={this.submitButtonClick}>Submit</button>
         }
     }
 
     private insertBreak() {
-        if (this.props.role === roles.MANAGER) {
+        if (this.props.role === roles.MANAGER && !this.props.showDriverList) {
             return <br />
         }
     }
@@ -72,15 +79,18 @@ class Hub extends Component<Props> {
     }
 
     private submitButtonClick = () => {
-        // TODO: post to server and get new ID back
         if (this.state.description !== '' && this.state.driver !== 0) {
             try {
                 const newDelivery = {
                     description: this.state.description
                 }
-                axios.post('/deliveries', newDelivery)
+                const authHeader = {
+                    headers: {
+                        'Authorization': `Bearer ${this.props.selectedToken}`
+                    }
+                }
+                axios.post('/deliveries', newDelivery, authHeader)
                     .then(response => {
-                        // console.log(response.data)
                         this.props.newDelivery(this.state.description, this.state.driver, response.data.id)
                     })
             } finally {
@@ -97,18 +107,28 @@ class Hub extends Component<Props> {
             <div className={styles.Hub}>
                 <h1>My Express Way</h1>
                 <h3>Delivery Management Portal</h3>
+                <p>Manager Auth0 Token: <input 
+                    type="text" 
+                    value={this.props.managerToken} 
+                    style={{ width: "250px" }}
+                    onChange={(e) => this.props.managerTokenChanged(e.target.value)}/></p>
+                <p>Driver Auth0 Token: <input 
+                    type="text" 
+                    value={this.props.driverToken}
+                    style={{ width: "250px" }}
+                    onChange={(e) => this.props.driverTokenChanged(e.target.value)}/></p>
                 <button onClick={this.props.publicClicked}>Public Role</button>
                 <button onClick={this.props.driverClicked}>Driver Role</button>
                 <button onClick={this.props.managerClicked}>Manager Role</button>
-                <button>Driver List</button>
-                { this.props.role === roles.MANAGER ? <hr style={{ width: "250px" }} /> : null }
-                { this.props.role === roles.MANAGER ? <p><b>Create New Delivery:</b></p> : null }
+                <button onClick={this.props.driverListClicked}>Driver List</button>
+                { this.props.role === roles.MANAGER && !this.props.showDriverList ? <hr style={{ width: "250px" }} /> : null }
+                { this.props.role === roles.MANAGER && !this.props.showDriverList ? <p><b>Create New Delivery:</b></p> : null }
                 { this.insertBreak() }
                 { this.showDeliveryInputLabel() }
                 { this.insertBreak() }
                 { this.showDriverInputLabel() }
                 { this.showSubmitButton() }
-                { this.props.role === roles.MANAGER ? <hr style={{ width: "250px" }} /> : null }
+                { this.props.role === roles.MANAGER && !this.props.showDriverList ? <hr style={{ width: "250px" }} /> : null }
             </div>
         )
     }

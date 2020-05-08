@@ -9,7 +9,8 @@ type Props = {
     driver: number,
     delivered?: boolean,
     role?: roles,
-    drivers?: any
+    drivers?: any,
+    selectedToken: string
 }
 
 class Delivery extends Component<Props> {
@@ -17,6 +18,7 @@ class Delivery extends Component<Props> {
         hidden: false,
         delivered: this.props.delivered,
         description: this.props.description,
+        driver: this.props.driver
     }
 
     private deliveryStatus() {
@@ -37,24 +39,44 @@ class Delivery extends Component<Props> {
 
     private showDriver() {
         if (this.props.role === roles.MANAGER) {
-            let driver = this.props.drivers[this.props.driver]
-            if (driver !== undefined) {
-                return <input value={driver.id}></input> 
-            } else {
-                return <input value='0'></input>
+            if (this.props.drivers !== null) {
+                let driver = this.props.drivers[this.props.driver]
+                if (driver !== undefined) {
+                    return <input value={driver.id} onChange={(e) => this.handleDriverChange(e.target.value, this.props.id)}></input> 
+                } else {
+                    return <input onChange={(e) => this.handleDriverChange(e.target.value, this.props.id)}></input>
+                }
             }
         }
 
         if (this.props.role === roles.DRIVER) {
-            let driver = this.props.drivers[this.props.driver]
-            if (driver !== undefined) {
-                return `${driver.fname + ' ' + driver.lname} `
-            } else {
-                return <p></p>
+            if (this.props.drivers !== null) {
+                let driver = this.props.drivers[this.props.driver]
+                if (driver !== undefined) {
+                    return `${driver.fname + ' ' + driver.lname} `
+                } else {
+                    return <p></p>
+                }
             }
         }
 
         return null
+    }
+    private handleDriverChange = (driver: string, id: number) => {
+        this.setState({ driver: driver})
+        const newDriverId = {
+            driver_id: +driver
+        }
+        console.log(newDriverId)
+        axios.patch(`/deliveries/${id}`, newDriverId, {
+                headers: {
+                    'Authorization': `Bearer ${this.props.selectedToken}`
+                }
+            }
+        )
+            .then(response => {
+                console.log(response.data)
+            })
     }
 
     private showDriverLabel() {
@@ -63,28 +85,34 @@ class Delivery extends Component<Props> {
         }
 
         if (this.props.role === roles.DRIVER) {
-            let driver = this.props.drivers[this.props.driver]
-            if (driver !== undefined) {
-                return <b>Driver: </b>
-            } else {
-                return ''
+            if (this.props.drivers !== null) {
+                let driver = this.props.drivers[this.props.driver]
+                if (driver !== undefined) {
+                    return <b>Driver: </b>
+                } else {
+                    return ''
+                }
             }
         }
     }
 
     private showDescription() {
         if (this.props.role === roles.MANAGER) {
-            return <input value={this.state.description} style={{ width: "250px" }} onChange={(e) => this.handleChange(e.target.value, this.props.id)} />
+            return <input value={this.state.description} style={{ width: "250px" }} onChange={(e) => this.handleDescriptionChange(e.target.value, this.props.id)} />
         }
         return <p><b>{this.props.description}</b></p>
     }
 
-    private handleChange = (description: string, id: number) => {
+    private handleDescriptionChange = (description: string, id: number) => {
         this.setState({ description: description})
         const newDescription = {
             description: this.state.description
         }
-        axios.patch(`/deliveries/${id}`, newDescription)
+        axios.patch(`/deliveries/${id}`, newDescription, {
+            headers: {
+                'Authorization': `Bearer ${this.props.selectedToken}`
+            }
+        })
     }
 
     private deliveryStyle() {
@@ -104,9 +132,12 @@ class Delivery extends Component<Props> {
     }
 
     private deleteClicked = (id:number) => {
-        axios.delete(`/deliveries/${id}`)
+        axios.delete(`/deliveries/${id}`, {
+            headers: {
+                'Authorization': `Bearer ${this.props.selectedToken}`
+            }
+        })
             .then(response => {
-                console.log(response.data)
                 this.setState({hidden: true})
             })
     }
@@ -122,10 +153,13 @@ class Delivery extends Component<Props> {
         const updated = {
             delivered: !delivered
         }
-        axios.patch(`/deliveries/${id}`, updated)
+        axios.patch(`/deliveries/${id}`, updated, {
+            headers: {
+                'Authorization': `Bearer ${this.props.selectedToken}`
+            }
+        })
             .then(response => {
                 this.setState({ delivered: !delivered })
-                console.log(response.data)
             })
     }
 

@@ -8,4 +8,4 @@ const development = axios.create({
     baseURL: 'http://localhost:5000/'
 })
 
-export default development
+export default production

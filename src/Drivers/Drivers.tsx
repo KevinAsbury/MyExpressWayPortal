@@ -1,17 +1,28 @@
 import React, { Component } from 'react'
-import Delivery from './Delivery/Delivery'
 import roles from '../enum-roles'
-import axios from '../axios_service'
+import Driver from './Driver/Driver'
 
 type driver = {
     id: number,
-    name: string
+    fname: string,
+    lname: string
 }
 
-class Drivers extends Component {
+interface IProps {
+    drivers?: driver[],
+    role: roles
+}
+
+
+class Drivers extends Component<IProps> {
     render () {
-        return (
-            'return something'
-        )
+        return (this.props.drivers?.map((driv: driver) => {
+            return (
+                <Driver id={driv.id} fname={driv.fname} lname={driv.lname}/>
+            )
+        }
+        ))
     }
 }
+
+export default Drivers
