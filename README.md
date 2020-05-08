@@ -1,7 +1,7 @@
 # My Express Way
 ## Frontend
 
-My [Udacity](https://www.udacity.com/) Full Statck Developer Nanodegree program final project. The My Express Way frontend used to connect to the MyExpressWay server that is used by an imaginary delivery company. They have drivers who need to login and mark if they are available and they have managers who need to login and see available drivers and deliveries. 
+My [Udacity](https://www.udacity.com/) Full Statck Developer Nanodegree program final project. The My Express Way is frontend used to connect to the MyExpressWay server that is used by an imaginary delivery company. They have drivers who need to login and mark if they are available and they have managers who need to login and see available drivers and deliveries. 
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
