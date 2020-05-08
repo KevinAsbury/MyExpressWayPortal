@@ -1,11 +1,11 @@
-import axios from 'axios'
+import axios from "axios"
 
 const production = axios.create({
-    baseURL: 'https://myexpressway.herokuapp.com/'
+  baseURL: "https://myexpressway.herokuapp.com/",
 })
 
 const development = axios.create({
-    baseURL: 'http://localhost:5000/'
+  baseURL: "http://localhost:5000/",
 })
 
 export default production
