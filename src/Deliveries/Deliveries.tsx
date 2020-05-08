@@ -23,7 +23,7 @@ interface IProps {
 }
 
 class Deliveries extends Component<IProps> {
-
+    // renders a list of the Delivery component from the driver list that is provided by App.tsx
     render () {
         return (this.props.deliveries?.map((deliv: delivery) => {
             return (

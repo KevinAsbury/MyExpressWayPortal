@@ -15,6 +15,7 @@ interface IProps {
 
 
 class Drivers extends Component<IProps> {
+    // Render a list of driver components
     render () {
         return (this.props.drivers?.map((driv: driver) => {
             return (

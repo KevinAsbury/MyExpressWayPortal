@@ -3,7 +3,7 @@ import styles from './Hub.module.css'
 import roles from '../enum-roles'
 import axios from '../axios_service'
 
-type Props = {
+type IProps = {
     role: roles,
     driverClicked: () => void,
     managerClicked: () => void,
@@ -18,18 +18,20 @@ type Props = {
     showDriverList: boolean
 }
 
-class Hub extends Component<Props> {
+class Hub extends Component<IProps> {
     state = {
         description: '',
         driver: 0
     }
 
+    // Determine if the label for delivery input should be shown
     private showDeliveryInputLabel() {
         if (this.props.role === roles.MANAGER && !this.props.showDriverList) {
             return <label>Description: {this.showDeliveryInput()}</label>
         }
     }
 
+    // Determine if the delivery input should be shown
     private showDeliveryInput() {
         if (this.props.role === roles.MANAGER && !this.props.showDriverList) {
             return <input 
@@ -40,12 +42,14 @@ class Hub extends Component<Props> {
         return null
     }
 
+    // Determine if the label for driver input should be shown
     private showDriverInputLabel() {
         if (this.props.role === roles.MANAGER && !this.props.showDriverList) {
             return <label>Driver: {this.showDriverInput()}</label>
         }
     }
 
+    // Determine if the driver input should be shown
     private showDriverInput() {
         if (this.props.role === roles.MANAGER && !this.props.showDriverList) {
             return <input 
@@ -54,30 +58,35 @@ class Hub extends Component<Props> {
         }
     }
 
+    // Determine if the submit button should be shown
     private showSubmitButton() {
         if (this.props.role === roles.MANAGER && !this.props.showDriverList) {
             return <button onClick={this.submitButtonClick}>Submit</button>
         }
     }
 
+    // Instert a break between componentents when called
     private insertBreak() {
         if (this.props.role === roles.MANAGER && !this.props.showDriverList) {
             return <br />
         }
     }
 
+    // Save the new description to the state
     private onChangeDescription(description: string){
         this.setState({
             description: description
         })
     }
 
+    // Save the new driver information to the state
     private onChangeDriver(driver: string){
         this.setState({
             driver: driver
         })
     }
 
+    // POST the new delivery to the server when submit button clicked
     private submitButtonClick = () => {
         if (this.state.description !== '' && this.state.driver !== 0) {
             try {
@@ -96,12 +105,14 @@ class Hub extends Component<Props> {
             } finally {
                 this.setState({
                     description: '',
-                    driver: ''
+                    driver: '0'
                 })
             }
         }
     }
 
+    // Render the elements of the hub
+    // This could be broken up in to smaller components
     render() {
         return (
             <div className={styles.Hub}>

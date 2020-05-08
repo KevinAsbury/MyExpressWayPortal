@@ -15,12 +15,17 @@ type Props = {
 
 class Delivery extends Component<Props> {
     state = {
+        // True will hide the delivery item
         hidden: false,
+        // Delivered checkbox status
         delivered: this.props.delivered,
+        // Item description
         description: this.props.description,
+        // Driver id
         driver: this.props.driver
     }
 
+    // Display a delivery status message
     private deliveryStatus() {
         if (this.state.delivered) {
             return "Delivered"
@@ -29,6 +34,7 @@ class Delivery extends Component<Props> {
         }
     }
 
+    // Determine if the checkbox is displayed
     private showDelivery() {
         if (this.props.role === roles.MANAGER || this.props.role === roles.DRIVER) {
             return <input type="checkbox" checked={this.state.delivered} onClick={() => this.checkboxClick(this.props.id)}/>
@@ -37,6 +43,7 @@ class Delivery extends Component<Props> {
         }
     }
 
+    // Determine if the driver input is displayed
     private showDriver() {
         if (this.props.role === roles.MANAGER) {
             if (this.props.drivers !== null) {
@@ -62,23 +69,23 @@ class Delivery extends Component<Props> {
 
         return null
     }
+
+    // Change handler for when driver id changes
+    // Needs input validation
     private handleDriverChange = (driver: string, id: number) => {
         this.setState({ driver: driver})
         const newDriverId = {
             driver_id: +driver
         }
-        console.log(newDriverId)
         axios.patch(`/deliveries/${id}`, newDriverId, {
                 headers: {
                     'Authorization': `Bearer ${this.props.selectedToken}`
                 }
             }
         )
-            .then(response => {
-                console.log(response.data)
-            })
     }
 
+    // Determine if the driver input label should be shown
     private showDriverLabel() {
         if (this.props.role === roles.MANAGER) {
             return 'Driver ID:'
@@ -96,6 +103,7 @@ class Delivery extends Component<Props> {
         }
     }
 
+    // Determine if the description input should be shown
     private showDescription() {
         if (this.props.role === roles.MANAGER) {
             return <input value={this.state.description} style={{ width: "250px" }} onChange={(e) => this.handleDescriptionChange(e.target.value, this.props.id)} />
@@ -103,6 +111,7 @@ class Delivery extends Component<Props> {
         return <p><b>{this.props.description}</b></p>
     }
 
+    // Handle changes to the description input
     private handleDescriptionChange = (description: string, id: number) => {
         this.setState({ description: description})
         const newDescription = {
@@ -115,6 +124,7 @@ class Delivery extends Component<Props> {
         })
     }
 
+    // Hide the delivery if the state is hidden
     private deliveryStyle() {
         if (this.state.hidden) {
             return 'hide'
@@ -131,6 +141,7 @@ class Delivery extends Component<Props> {
         return result
     }
 
+    // Use axios to delete the delivery if the X button is clicked
     private deleteClicked = (id:number) => {
         axios.delete(`/deliveries/${id}`, {
             headers: {
@@ -142,12 +153,14 @@ class Delivery extends Component<Props> {
             })
     }
 
+    // Instert a break between elements if called
     private insertBreak() {
         if (this.props.role === roles.MANAGER) {
             return <br />
         }
     }
 
+    // Handle check box clicks
     private checkboxClick = (id: number) => {
         let delivered = this.state.delivered
         const updated = {
@@ -163,6 +176,7 @@ class Delivery extends Component<Props> {
             })
     }
 
+    // Render the components
     render() {
         return (
             <div className={this.deliveryStyle()}>
